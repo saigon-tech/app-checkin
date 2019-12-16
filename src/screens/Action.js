@@ -24,19 +24,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import {createAppContainer} from 'react-navigation';
 import {createBottomTabNavigator} from 'react-navigation-tabs';
 import HistoryScreen from '../../src/screens/History';
-//import LoginScreen from '../../src/screens/Login';
 import qs from "qs";
-
-
-let userInfoStorage = {};
-
-
-AsyncStorage.getItem('userInfo').then((data) => {
-  if (data != null) {
-    userInfoStorage = JSON.parse(data);
-  }
-});
-
 
 class ActionScreen extends Component {
   constructor(props) {
@@ -50,12 +38,21 @@ class ActionScreen extends Component {
     uri: null,
     process: false,
     currentTime: moment().format('DD-MM-YYYY HH:mm:ss'),
-    is_punched_in: null
+    is_punched_in: null,
+    employeeName: '',
+    employeeId: ''
   };
 
   async componentWillUnmount() {
     this.keyboardDidShowListener.remove();
     this.keyboardDidHideListener.remove();
+    const self = this;
+    AsyncStorage.getItem('userInfo').then((data) => {
+      self.setState({
+        employeeName: JSON.parse(data).employeeName,
+        employeeId: JSON.parse(data).employeeName
+      });
+    });
   }
 
   _keyboardDidShow = () => {
@@ -67,6 +64,12 @@ class ActionScreen extends Component {
   _keyboardDidHide = () => {
     this.setState({
       keyboardState: 'closed'
+    });
+  }
+
+  logout() {
+    AsyncStorage.getItem('userInfo').then((response) => {
+      if(response) this.props.navigation.navigate('Login');
     });
   }
 
@@ -96,19 +99,19 @@ class ActionScreen extends Component {
       });
   }
 
-  _getUserStatus(){
+  _getUserStatus() {
     const self = this;
-    self.setState({is_punched_in:  null});
+    self.setState({is_punched_in: null});
     AsyncStorage.getItem('userInfo').then((data) => {
       const employeeId = JSON.parse(data).employeeId;
       const apiUrl = Constant.apiGetStatus.replace('{employeeId}', employeeId);
       axios.get(apiUrl).then(async function (response) {
-          if(response.status == 200){
-            self.setState({is_punched_in:  response.data.data.is_punched_in});
-          } else{
-            console.log('Error 202 = ', response.data.error.text);
-          }
-        })
+        if (response.status == 200) {
+          self.setState({is_punched_in: response.data.data.is_punched_in});
+        } else {
+          console.log('Error 202 = ', response.data.error.text);
+        }
+      })
         .catch(function (error) {
           console.log('Network error');
           throw error;
@@ -187,7 +190,19 @@ class ActionScreen extends Component {
                 :
                 null
               }
-              <Text style={styles.userText}>User: {userInfoStorage.employeeName}</Text>
+              {this.state.keyboardState == 'closed' ?
+              <TouchableOpacity
+                style={styles.logOut}
+                onPress={() => {
+                  this.logout()
+                }}
+              >
+                <Ionicons name='ios-log-out' size={20} color='red' />
+              </TouchableOpacity>
+              :
+              null
+              }
+              <Text style={styles.userText}>User: {this.state.employeeName}</Text>
               <Text style={styles.userText}>Time: {this.state.currentTime}</Text>
               <TextInput
                 style={styles.textInput}
@@ -203,7 +218,7 @@ class ActionScreen extends Component {
                     style={styles.selectButton}
                     onPress={() => {
                       this.punched(
-                        userInfoStorage.employeeId,
+                        this.state.employeeId,
                         this.state.is_punched_in ? Constant.apiCheckOut : Constant.apiCheckIn
                       )
                     }}
@@ -211,7 +226,7 @@ class ActionScreen extends Component {
                   >
                     {this.state.progress ?
                       <ActivityIndicator size="small" color="#fff" style={{marginRight: 10}}/>
-                    : null}
+                      : null}
                     <Text style={styles.textButton}>Check {this.state.is_punched_in ? 'out' : 'in'}</Text>
                   </TouchableOpacity>
                   :
@@ -220,7 +235,7 @@ class ActionScreen extends Component {
                 <TouchableOpacity style={styles.btnRefresh} onPress={() => {
                   this._getUserStatus()
                 }}>
-                  <Ionicons name="ios-refresh" size={23} color="white" />
+                  <Ionicons name="ios-refresh" size={23} color="white"/>
                 </TouchableOpacity>
               </View>
             </View>
@@ -282,7 +297,7 @@ const styles = StyleSheet.create({
     borderWidth: 3,
   },
   sectionLogin: {
-    marginTop: 75,
+    marginTop: 115,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#f4f4f494',
@@ -315,6 +330,19 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     flexDirection: 'row',
     marginTop: 10,
+  },
+  logOut: {
+    backgroundColor: 'white',
+    width: 38,
+    height: 38,
+    top: -47,
+    right: -40,
+    borderRadius: 400 / 2,
+    borderWidth: 2,
+    borderColor: '#CCC',
+    textAlign: 'center',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   textInput: {
     borderRadius: 5,
