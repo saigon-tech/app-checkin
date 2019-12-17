@@ -67,10 +67,13 @@ class ActionScreen extends Component {
     });
   }
 
-  logout() {
-    AsyncStorage.getItem('userInfo').then((response) => {
-      if(response) this.props.navigation.navigate('Login');
-    });
+  async logout() {
+    try {
+      await AsyncStorage.removeItem('userInfo');
+      this.props.navigation.navigate('Login');
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   punched(employeeId, url) {
