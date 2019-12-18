@@ -35,47 +35,56 @@ export default class Login extends Component {
   };
 
   showPassword() {
-    this.setState({ showPassword: !this.state.showPassword });
+    this.setState({showPassword: !this.state.showPassword});
   }
-  async login(){
+
+  async login() {
     this.setState({progress: true, loginError: null});
-    const user = {
+    let user = {
       username: this.state.username,
       password: this.state.password
     };
     const self = this;
-    axios.post(
-        Constant.apiLogin,
-        qs.stringify(user)
-      )
-      .then(async function (response) {
-        if(response.status == 200){
-          self.setState({loginError: null});
-          response.data.user.userPassword =  user.password;
-          await AsyncStorage.setItem('userInfo', JSON.stringify(response.data.user));
-          self.props.navigation.navigate('Action');
-        } else{
-          self.setState({loginError: response.data.error.text});
+    try {
+      let response = await axios.post(Constant.apiLogin, qs.stringify(user));
+      if (response.status == 200) {
+        self.setState({loginError: null});
+        let userInfo = {
+          employeeId: response.data.user.employeeId,
+          employeeName: response.data.user.employeeName,
+          employeeAvatar: null
+        };
+        let urlAvatar = Constant.apiGetAvatar.replace('{employeeId}', userInfo.employeeId);
+        try {
+          let userAvatar = await axios.get(urlAvatar);
+          userInfo.employeeAvatar = 'data:image/png;base64,' + userAvatar.data.data.base64;
+        } catch (error) {
+          // Error get avatar
         }
-        self.setState({progress: false});
-      })
-      .catch(function (error) {
-        self.setState({loginError: 'Network error'});
-        self.setState({progress: false});
-        throw error;
-      });
+        await AsyncStorage.setItem('userInfo', JSON.stringify(userInfo));
+        self.props.navigation.navigate('Action', userInfo);
+      } else {
+        self.setState({loginError: response.data.error.text});
+      }
+      self.setState({progress: false});
+    } catch (e) {
+      self.setState({loginError: 'Network error'});
+      self.setState({progress: false});
+      throw e;
+    }
   }
+
   render() {
     return (
       <ImageBackground source={require('../../assets/images/bg.jpg')} style={{width: '100%', height: '100%'}}>
         <SafeAreaView style={styles.mainLogin}>
-          <Header />
+          <Header/>
           <View style={styles.sectionLogin}>
-            { this.state.loginError != null ?
+            {this.state.loginError != null ?
               <View style={styles.sectionWarning}>
-                <Text style={styles.textWarning}>{ this.state.loginError }</Text>
+                <Text style={styles.textWarning}>{this.state.loginError}</Text>
               </View>
-            : null }
+              : null}
             <TextInput
               style={styles.textInput}
               placeholder="Username"
@@ -91,13 +100,17 @@ export default class Login extends Component {
                 value={this.state.password}
               />
               <Icon style={styles.iconPassword}
-                    name={this.state.showPassword ? "eye" : "eye-slash" }
-                    onPress={()=>{this.showPassword()}} />
+                    name={this.state.showPassword ? "eye" : "eye-slash"}
+                    onPress={() => {
+                      this.showPassword()
+                    }}/>
             </View>
             <TouchableOpacity
               style={styles.selectButton}
-              onPress={()=>{this.login()}}>
-              { this.state.progress ?  <ActivityIndicator size="small" color="#fff" style={{marginRight: 8}} /> : null }
+              onPress={() => {
+                this.login()
+              }}>
+              {this.state.progress ? <ActivityIndicator size="small" color="#fff" style={{marginRight: 8}}/> : null}
               <Text style={styles.textButton}>Login</Text>
             </TouchableOpacity>
           </View>
@@ -112,12 +125,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   sectionWarning: {
-    backgroundColor: 'red',
+    backgroundColor: '#e60012',
     padding: 20,
     marginBottom: 30,
     width: '100%',
   },
-  textWarning : {
+  textWarning: {
     color: '#FFF',
     fontSize: 16
   },
@@ -169,7 +182,7 @@ const styles = StyleSheet.create({
     width: 100,
     height: 45,
     justifyContent: 'center',
-    backgroundColor: 'red',
+    backgroundColor: '#e60012',
     alignItems: 'center',
     borderRadius: 5,
     flexDirection: 'row',

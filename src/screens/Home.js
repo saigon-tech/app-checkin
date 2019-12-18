@@ -10,10 +10,10 @@ export default class Home extends Component {
   componentDidMount() {
     const self = this;
     AsyncStorage.getItem('userInfo').then((data) => {
-      if(data == null){
+      if (data == null) {
         self.props.navigation.navigate('Login');
       } else {
-        self.props.navigation.navigate('Action');
+        self.props.navigation.navigate('Action', JSON.parse(data));
       }
     });
   }
@@ -21,7 +21,7 @@ export default class Home extends Component {
   render() {
     return (
       <SafeAreaView style={styles.mainLogin}>
-        <ActivityIndicator size="large" color="#red" style={{marginRight: 15}} />
+        <ActivityIndicator size="large" color="#e60012" style={{marginRight: 15}}/>
       </SafeAreaView>
     );
   }
