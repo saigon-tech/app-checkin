@@ -2,7 +2,6 @@
 import {
   ImageBackground,
   SafeAreaView,
-  StyleSheet,
   Text,
   FlatList,
   View
@@ -85,30 +84,30 @@ export default class History extends Component {
 
   render() {
     return (
-      <ImageBackground source={require('../../assets/images/bg.jpg')} style={{width: '100%', height: '100%'}}>
-        <SafeAreaView style={styles.mainLogin}>
+      <ImageBackground source={require('../../assets/images/bg.jpg')} style={appStyle.mainWrapper}>
+        <SafeAreaView style={appStyle.mainHome}>
           <Header/>
           <FlatList
-            style={styles.historySection}
+            style={appStyle.historySection}
             data={DATA}
             renderItem={
               ({item}) =>
                 <View>
-                  <Text style={styles.historyItem}>{item.date}</Text>
-                  <View style={styles.historyIn}>
-                    <Text style={{color: '#CCC', fontSize: 12}}>{item.in}</Text>
+                  <Text style={appStyle.historyItem}>{item.date}</Text>
+                  <View style={appStyle.historyIn}>
+                    <Text style={{color: Colors.grey, fontSize: 12}}>{item.in}</Text>
                     {moment(item.in, 'hh:mm') > moment(START_WORK_TIME, 'hh:mm') ?
-                      <View style={styles.iconIn}>
-                        <Ionicons name='md-warning' size={16} color='#e60012'/>
+                      <View style={appStyle.iconIn}>
+                        <Ionicons name='md-warning' size={16} color={Colors.red}/>
                       </View>
                       : null
                     }
                   </View>
-                  <View style={styles.historyOut}>
-                    <Text style={{color: '#FFF'}}>{item.out}</Text>
+                  <View style={appStyle.historyOut}>
+                    <Text style={{color: Colors.white}}>{item.out}</Text>
                     {moment(item.out, 'hh:mm') < moment(END_WORK_TIME, 'hh:mm') ?
-                      <View style={styles.iconOut}>
-                        <Ionicons name='md-warning' size={20} color='#e60012'/>
+                      <View style={appStyle.iconOut}>
+                        <Ionicons name='md-warning' size={20} color={Colors.red}/>
                       </View>
                       : null
                     }
@@ -121,51 +120,3 @@ export default class History extends Component {
     );
   }
 }
-
-const styles = StyleSheet.create({
-  mainLogin: {
-    flex: 1,
-    alignItems: 'center'
-  },
-  historySection: {
-    width: '90%',
-    marginBottom: 20,
-  },
-  historyItem: {
-    backgroundColor: '#282c34',
-    padding: 10,
-    color: 'white',
-    marginBottom: 10,
-    height: 50,
-    lineHeight: 30,
-    borderRadius: 5,
-  },
-  historyIn: {
-    position: 'absolute',
-    flexDirection: 'row',
-    top: 4,
-    right: 10,
-    width: 60,
-    height: 25,
-    lineHeight: 25
-  },
-  historyOut: {
-    position: 'absolute',
-    flexDirection: 'row',
-    bottom: 10,
-    right: 10,
-    width: 60,
-    height: 25,
-    lineHeight: 25
-  },
-  iconIn: {
-    width: 42,
-    height: 20,
-    alignItems: 'center'
-  },
-  iconOut: {
-    width: 30,
-    height: 20,
-    alignItems: 'center',
-  }
-});

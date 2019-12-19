@@ -1,4 +1,4 @@
-import {SafeAreaView, ActivityIndicator, StyleSheet} from "react-native";
+import {SafeAreaView, ActivityIndicator, Text} from "react-native";
 import React, {Component} from "react";
 import AsyncStorage from '@react-native-community/async-storage';
 
@@ -20,18 +20,10 @@ export default class Home extends Component {
 
   render() {
     return (
-      <SafeAreaView style={styles.mainLogin}>
-        <ActivityIndicator size="large" color="#e60012" style={{marginRight: 15}}/>
+      <SafeAreaView style={appStyle.mainHome}>
+        <ActivityIndicator style={appStyle.activityHome} size="large" color={Colors.red} />
+        <Text>Loading ...</Text>
       </SafeAreaView>
     );
   }
 }
-
-const styles = StyleSheet.create({
-  mainLogin: {
-    flex: 1,
-    alignItems: 'center',
-    height: '100%',
-    justifyContent: 'center'
-  }
-});

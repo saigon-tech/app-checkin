@@ -1,6 +1,5 @@
 import {
   Text,
-  StyleSheet,
   SafeAreaView,
   View,
   TouchableOpacity,
@@ -140,20 +139,20 @@ class ActionScreen extends Component {
   render() {
     const {navigation} = this.props;
     return (
-      <ImageBackground source={require('../../assets/images/bg.jpg')} style={{width: '100%', height: '100%'}}>
-        <SafeAreaView style={styles.mainLogin}>
+      <ImageBackground source={require('../../assets/images/bg.jpg')} style={appStyle.mainWrapper}>
+        <SafeAreaView style={appStyle.mainLogin}>
           <Header/>
-          <View style={styles.wrapperLogin}>
-            <View style={styles.sectionLogin}>
+          <View style={appStyle.wrapperAction}>
+            <View style={appStyle.sectionAction}>
               {this.state.keyboardState == 'closed' ?
                 navigation.getParam('employeeAvatar') != null ?
                   <Image
-                    style={styles.avatarImage}
+                    style={appStyle.avatarImage}
                     source={{uri: navigation.getParam('employeeAvatar')}}
                   />
                   :
                   <Image
-                    style={styles.avatarImage}
+                    style={appStyle.avatarImage}
                     source={require('../../assets/images/avatar.png')}
                   />
                 :
@@ -161,33 +160,32 @@ class ActionScreen extends Component {
               }
               {this.state.keyboardState == 'closed' ?
                 <TouchableOpacity
-                  style={styles.logOut}
+                  style={appStyle.logOut}
                   onPress={() => {
                     this.logout()
                   }}
                 >
-                  <Ionicons name='ios-log-out' size={20} color='#e60012'/>
+                  <Ionicons name='ios-log-out' size={20} color={Colors.red} />
                 </TouchableOpacity>
                 :
                 null
               }
-              <View style={styles.userInfo}>
-                {/*<Text style={styles.userText}>User prop: {navigation.getParam('employeeId')}</Text>*/}
-                <Text style={styles.userText}>User: {navigation.getParam('employeeName')}</Text>
-                <Text style={styles.userText}>Time: {this.state.currentTime}</Text>
+              <View style={appStyle.userInfo}>
+                <Text style={appStyle.userText}>User: {navigation.getParam('employeeName')}</Text>
+                <Text style={appStyle.userText}>Time: {this.state.currentTime}</Text>
               </View>
               <TextInput
-                style={styles.textInput}
+                style={appStyle.textInput}
                 placeholder="Note"
                 onChangeText={(note) => this.setState({note})}
                 value={this.state.note}
                 onSubmitEditing={Keyboard.dismiss}
               />
 
-              <View style={styles.inlineContainer}>
+              <View style={appStyle.inlineContainer}>
                 {this.state.is_punched_in != null ?
                   <TouchableOpacity
-                    style={styles.selectButton}
+                    style={appStyle.selectButton}
                     onPress={() => {
                       this.punched(
                         navigation.getParam('employeeId'),
@@ -197,17 +195,17 @@ class ActionScreen extends Component {
                     disabled={this.state.progress}
                   >
                     {this.state.progress ?
-                      <ActivityIndicator size="small" color="#fff" style={{marginRight: 10}}/>
+                      <ActivityIndicator size="small" color={Colors.white} style={{marginRight: 10}}/>
                       : null}
-                    <Text style={styles.textButton}>Check {this.state.is_punched_in ? 'out' : 'in'}</Text>
+                    <Text style={appStyle.textButton}>Check {this.state.is_punched_in ? 'out' : 'in'}</Text>
                   </TouchableOpacity>
                   :
-                  <ActivityIndicator size="small" color="#e60012" style={{marginTop: 10}}/>
+                  <ActivityIndicator size="small" color={Colors.red} style={{marginTop: 10}}/>
                 }
-                <TouchableOpacity style={styles.btnRefresh} onPress={() => {
+                <TouchableOpacity style={appStyle.btnRefresh} onPress={() => {
                   this._getUserStatus()
                 }}>
-                  <Ionicons name="ios-refresh" size={23} color="white"/>
+                  <Ionicons name="ios-refresh" size={20} color={Colors.white} />
                 </TouchableOpacity>
               </View>
             </View>
@@ -221,8 +219,7 @@ class ActionScreen extends Component {
 const TabNavigator = createBottomTabNavigator(
   {
     Action: ActionScreen,
-    History: HistoryScreen,
-    //Login: LoginScreen
+    History: HistoryScreen
   },
   {
     defaultNavigationOptions: ({navigation}) => ({
@@ -241,101 +238,9 @@ const TabNavigator = createBottomTabNavigator(
       },
     }),
     tabBarOptions: {
-      activeTintColor: '#e60012',
-      inactiveTintColor: '#7b7b7b'
+      activeTintColor: Colors.red,
+      inactiveTintColor: Colors.tabInactive
     },
   }
 );
 export default createAppContainer(TabNavigator);
-
-const styles = StyleSheet.create({
-  mainLogin: {
-    flex: 1
-  },
-  wrapperLogin: {
-    flex: 1,
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: -75,
-  },
-  avatarImage: {
-    width: 150,
-    height: 150,
-    position: 'absolute',
-    top: -75,
-    borderRadius: 400 / 2,
-    borderColor: '#CCC',
-    borderWidth: 3,
-  },
-  sectionLogin: {
-    marginTop: 115,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#f4f4f494',
-    borderRadius: 20,
-    maxWidth: 320,
-    width: '80%',
-    paddingTop: 95,
-    paddingBottom: 30,
-  },
-  inlineContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap'
-  },
-  btnRefresh: {
-    marginTop: 10,
-    marginLeft: 10,
-    width: 45,
-    height: 45,
-    backgroundColor: '#e60012',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 5
-  },
-  selectButton: {
-    width: 140,
-    height: 45,
-    justifyContent: 'center',
-    backgroundColor: '#e60012',
-    alignItems: 'center',
-    borderRadius: 5,
-    flexDirection: 'row',
-    marginTop: 10,
-  },
-  logOut: {
-    backgroundColor: 'white',
-    width: 38,
-    height: 38,
-    top: -47,
-    right: -40,
-    borderRadius: 400 / 2,
-    borderWidth: 2,
-    borderColor: '#CCC',
-    textAlign: 'center',
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  textInput: {
-    borderRadius: 5,
-    width: '80%',
-    maxWidth: 400,
-    height: 50,
-    fontSize: 16,
-    paddingHorizontal: 10,
-    marginBottom: 10,
-    backgroundColor: 'white',
-  },
-  textButton: {
-    color: 'white',
-    fontSize: 16,
-  },
-  userInfo: {
-    marginTop: -20
-  },
-  userText: {
-    marginBottom: 12,
-    fontSize: 16,
-
-  }
-});

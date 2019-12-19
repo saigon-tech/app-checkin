@@ -2,7 +2,6 @@
 import {
   ImageBackground,
   SafeAreaView,
-  StyleSheet,
   Text,
   TextInput,
   View,
@@ -12,7 +11,6 @@ import {
 // Component
 import Header from "../components/Header";
 
-import {Colors} from "react-native/Libraries/NewAppScreen";
 import React, {Component} from "react";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -76,42 +74,42 @@ export default class Login extends Component {
 
   render() {
     return (
-      <ImageBackground source={require('../../assets/images/bg.jpg')} style={{width: '100%', height: '100%'}}>
-        <SafeAreaView style={styles.mainLogin}>
+      <ImageBackground source={require('../../assets/images/bg.jpg')} style={appStyle.mainWrapper}>
+        <SafeAreaView style={appStyle.mainLogin}>
           <Header/>
-          <View style={styles.sectionLogin}>
+          <View style={appStyle.sectionLogin}>
             {this.state.loginError != null ?
-              <View style={styles.sectionWarning}>
-                <Text style={styles.textWarning}>{this.state.loginError}</Text>
+              <View style={appStyle.sectionWarning}>
+                <Text style={appStyle.textWarning}>{this.state.loginError}</Text>
               </View>
               : null}
             <TextInput
-              style={styles.textInput}
+              style={appStyle.textInput}
               placeholder="Username"
               onChangeText={(username) => this.setState({username})}
               value={this.state.username}
             />
-            <View style={styles.sectionPassword}>
+            <View style={appStyle.sectionPassword}>
               <TextInput
-                style={styles.textInputPassword}
+                style={appStyle.textInputPassword}
                 placeholder="Password"
                 secureTextEntry={!this.state.showPassword}
                 onChangeText={(password) => this.setState({password})}
                 value={this.state.password}
               />
-              <Icon style={styles.iconPassword}
+              <Icon style={appStyle.iconPassword}
                     name={this.state.showPassword ? "eye" : "eye-slash"}
                     onPress={() => {
                       this.showPassword()
                     }}/>
             </View>
             <TouchableOpacity
-              style={styles.selectButton}
+              style={appStyle.selectButton}
               onPress={() => {
                 this.login()
               }}>
               {this.state.progress ? <ActivityIndicator size="small" color="#fff" style={{marginRight: 8}}/> : null}
-              <Text style={styles.textButton}>Login</Text>
+              <Text style={appStyle.textButton}>Login</Text>
             </TouchableOpacity>
           </View>
         </SafeAreaView>
@@ -120,75 +118,3 @@ export default class Login extends Component {
   }
 }
 
-const styles = StyleSheet.create({
-  mainLogin: {
-    flex: 1,
-  },
-  sectionWarning: {
-    backgroundColor: '#e60012',
-    padding: 20,
-    marginBottom: 30,
-    width: '100%',
-  },
-  textWarning: {
-    color: '#FFF',
-    fontSize: 16
-  },
-  sectionLogin: {
-    flex: 1,
-    alignItems: 'center',
-    height: '100%',
-    justifyContent: 'center',
-  },
-  sectionPassword: {
-    position: 'relative',
-    height: 40,
-    width: '80%',
-    maxWidth: 400,
-    marginBottom: 30,
-  },
-  textInputPassword: {
-    borderRadius: 3,
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: 40,
-    fontSize: 14,
-    paddingHorizontal: 10,
-    backgroundColor: 'white',
-  },
-  iconPassword: {
-    color: Colors.dark,
-    fontSize: 20,
-    width: 40,
-    height: 40,
-    position: 'absolute',
-    textAlign: 'center',
-    textAlignVertical: 'center',
-    right: 0,
-  },
-  textInput: {
-    borderRadius: 3,
-    width: '80%',
-    maxWidth: 400,
-    height: 40,
-    fontSize: 14,
-    marginBottom: 20,
-    paddingHorizontal: 10,
-    backgroundColor: 'white',
-  },
-  selectButton: {
-    width: 100,
-    height: 45,
-    justifyContent: 'center',
-    backgroundColor: '#e60012',
-    alignItems: 'center',
-    borderRadius: 5,
-    flexDirection: 'row',
-  },
-  textButton: {
-    color: 'white',
-    fontSize: 15,
-  },
-});

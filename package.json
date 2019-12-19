@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "clean:android": "cd android && gradlew clean && cd ../",
     "clean:ios": "cd ios && xcodebuild clean && cd ../",
-    "export:android": "cd android && gradlew bundleRelease && cd ../"
+    "export:android": "cd android && gradlew assembleRelease && cd ../"
   },
   "dependencies": {
     "@react-native-community/async-storage": "^1.6.3",
