@@ -17,6 +17,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import axios from 'axios';
 import qs from 'qs';
 import Constant from '../../config/Constant';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 
 
 export default class Login extends Component {
@@ -108,7 +109,11 @@ export default class Login extends Component {
               onPress={() => {
                 this.login()
               }}>
-              {this.state.progress ? <ActivityIndicator size="small" color="#fff" style={{marginRight: 8}}/> : null}
+              {this.state.progress ?
+                <ActivityIndicator size="small" color={Colors.white} style={{marginRight: 8}}/>
+                :
+                <Ionicons name='ios-log-in' size={18} color={Colors.white} style={{marginRight: 14}} />
+              }
               <Text style={appStyle.textButton}>Login</Text>
             </TouchableOpacity>
           </View>
