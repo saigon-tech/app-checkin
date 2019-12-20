@@ -1,4 +1,4 @@
-const hostname = 'http://192.168.0.103:8080';
+const hostname = 'http://192.168.0.222';
 export default Constant = {
   apiLogin: hostname + '/symfony/web/index.php/api/v1/login',
   apiGetAvatar: hostname + '/symfony/web/index.php/api/v1/employee/{employeeId}/photo',

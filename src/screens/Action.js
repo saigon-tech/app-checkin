@@ -16,7 +16,7 @@ import React, {Component} from "react";
 import axios from "axios";
 
 const moment = require('moment');
-
+const Colors = require('../../assets/styles/Colors');
 import Constant from '../../config/Constant';
 
 import Ionicons from 'react-native-vector-icons/Ionicons';
