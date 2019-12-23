@@ -211,5 +211,45 @@ module.exports = StyleSheet.create({
     width: 30,
     height: 20,
     alignItems: 'center',
+  },
+  containerModal: {
+    flex: 1,
+    backgroundColor: Colors.blackOpacity,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  contentModal: {
+    backgroundColor: Colors.white,
+    zIndex: 9,
+    position: 'absolute',
+    width: '80%',
+    maxWidth: 320,
+    alignItems: 'center',
+    borderRadius: 5,
+  },
+  headerModal: {
+    fontSize: 16,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+  },
+  bodyModal: {
+    borderTopWidth: 1,
+    borderTopColor: Colors.grey,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.grey,
+    width: '100%',
+    paddingHorizontal: 15,
+    paddingVertical: 20,
+  },
+  footerModal: {
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+  },
+  headerText: {
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
+  bodyText: {
+    fontSize: 14
   }
 });

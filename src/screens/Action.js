@@ -8,14 +8,17 @@ import {
   TextInput,
   Keyboard,
   ActivityIndicator,
-  AppState
+  AppState,
+  Modal,
+  TouchableWithoutFeedback
 } from "react-native";
 import AsyncStorage from '@react-native-community/async-storage';
 import Header from "../components/Header";
 import React, {Component} from "react";
 import axios from "axios";
 
-const moment = require('moment');
+const moment = require('moment-timezone');
+moment.tz.setDefault('Asia/Ho_Chi_Minh');
 const Colors = require('../../assets/styles/Colors');
 import Constant from '../../config/Constant';
 
@@ -36,8 +39,15 @@ class ActionScreen extends Component {
     note: '',
     process: false,
     currentTime: moment().format('DD-MM-YYYY HH:mm:ss'),
-    is_punched_in: null
+    is_punched_in: null,
+    modalVisible: false,
+    modalTitle: '',
+    modalContent: '',
   };
+
+  setModalVisible(visible) {
+    this.setState({modalVisible: visible});
+  }
 
   async componentWillUnmount() {
     this.keyboardDidShowListener.remove();
@@ -66,9 +76,10 @@ class ActionScreen extends Component {
     }
   }
 
-  punched(employeeId, url) {
+  async punched(employeeId, url) {
     const apiUrl = url.replace('{employeeId}', employeeId);
-    const body = {
+    let body = {
+      timezone: 'Asia/Ho_Chi_Minh',
       datetime: moment().format('YYYY-MM-DD HH:mm'),
     }
     if (this.state.note != '') {
@@ -79,14 +90,26 @@ class ActionScreen extends Component {
     axios.post(apiUrl, qs.stringify(body)).then(async function (response) {
       if (response.status == 200) {
         self.setState({is_punched_in: !self.state.is_punched_in});
-        alert('Success');
+        self.setState({
+          modalVisible: true,
+          modalTitle: 'Success',
+          modalContent: 'Punched'
+        });
       } else {
-        alert(response.data.error.text);
+        self.setState({
+          modalVisible: true,
+          modalTitle: 'Error',
+          modalContent: response.data.error.text
+        });
       }
       self.setState({progress: false});
     })
       .catch(function (error) {
-        alert('Error Network');
+        self.setState({
+          modalVisible: true,
+          modalTitle: 'Error Network',
+          modalContent: 'Can\'t punched'
+        });
         self.setState({progress: false});
         throw error;
       });
@@ -101,11 +124,19 @@ class ActionScreen extends Component {
       if (response.status == 200) {
         self.setState({is_punched_in: response.data.data.is_punched_in});
       } else {
-        console.log('Error 202 = ', response.data.error.text);
+        self.setState({
+          modalVisible: true,
+          modalTitle: 'Error',
+          modalContent: response.data.error.text
+        });
       }
     })
       .catch(function (error) {
-        console.log('Network error');
+        self.setState({
+          modalVisible: true,
+          modalTitle: 'Network Error',
+          modalContent: 'Can\'t get User Info'
+        });
         throw error;
       });
   }
@@ -142,6 +173,40 @@ class ActionScreen extends Component {
       <ImageBackground source={require('../../assets/images/bg.jpg')} style={appStyle.mainWrapper}>
         <SafeAreaView style={appStyle.mainLogin}>
           <Header/>
+
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={this.state.modalVisible}
+            onRequestClose={() => {
+              this.setModalVisible(false);
+            }}
+            >
+            <TouchableWithoutFeedback
+              onPress={() => {
+                this.setModalVisible(false);
+              }}>
+              <View style={appStyle.containerModal}>
+                <View style={appStyle.contentModal} >
+                  <View style={appStyle.headerModal} >
+                    <Text style={appStyle.headerText}>{this.state.modalTitle} !</Text>
+                  </View>
+                  <View style={appStyle.bodyModal} >
+                    <Text style={appStyle.bodyText}>{this.state.modalContent}</Text>
+                  </View>
+                  <View style={appStyle.footerModal} >
+                    <TouchableOpacity
+                      onPress={() => {
+                        this.setModalVisible(false);
+                      }}>
+                      <Text style={appStyle.headerText}>Close</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </View>
+            </TouchableWithoutFeedback>
+          </Modal>
+
           <View style={appStyle.wrapperAction}>
             <View style={appStyle.sectionAction}>
               {this.state.keyboardState == 'closed' ?
